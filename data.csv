@@ -1,0 +1,11 @@
+timestamp,source_ip,dest_ip,port,protocol,event_type,severity,bytes_sent,bytes_received,user_agent,outcome
+2026-01-14 10:15:23,192.168.1.100,10.0.0.50,80,TCP,http_request,info,1452,0,Mozilla/5.0 (Windows NT 10.0; Win64; x64),allowed
+2026-01-14 10:15:45,185.220.101.12x,10.0.0.50,22,SSH,brute_force,high,0,0,"",blocked
+2026-01-14 10:16:02,192.168.1.105,10.0.0.75,443,TCP,ssl_connection,info,2048,1024,"Mozilla/5.0 ",allowed
+2026-01-14 10:16:15,45.79.123.45,10.0.0.50,445,UDP,dns_query,low,64,128,NULL,allowed
+2026-01-14 10:17:30,192.168.1.110,10.0.0.60,3389,TCP,rdp_login,medium,4096,-1,"",failed
+2026-01-14 10:18:12,91.219.236.89,10.0.0.55,23,TCP,telnet_attempt,critical,0,0,"-",blocked
+2026-01-14 10:19:47,192.168.1.120,10.0.0.80,53,UDP,dns_query,info,48,120,"",allowed
+2026-01-14 10:20:05,203.0.113.25,10.0.0.50,1433,TCP,sql_injection_attempt,high,892,0,NULL,blocked
+2026-01-14 10:21:33,192.168.1.130,10.0.0.90,8080,TCP,http_request,info,3276,2048,Mozilla/5.0,allowed
+2026-01-14 10:22:19,198.51.100.78,10.0.0.65,445,SMB,file_access,medium,8192,16384,"",allowed
