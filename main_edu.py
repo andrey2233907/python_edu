@@ -114,3 +114,79 @@ from datetime import datetime
 # print(datetime.now())
 
 
+
+
+
+# RE 
+
+
+
+
+import re
+
+
+# ^ - начало строки
+# \w - любая буква или цифра
+# [] - любой символ из тех что внутри скобок
+# + - 1 или более символов
+# \d - любая цифра
+# . - любой символ (внутри скобок - просто точка)
+# $ - конец строки
+# {n,n} - количество символов от n до n
+# {n,} - количество чимволов от n до бесконечности
+# 0 или более символов
+# ? - 0 или 1 символов
+# | - или
+
+
+# string = 'andrey2233907@gmail.com'
+# regex = r'^[\w-.]+@[\w]+\.[/w]+'
+
+# result = re.search(regex, string)
+# if result != None:
+#     print('строка подходит')
+
+
+
+# data = '24.01.6475-23:10'
+# regex = r'^\d{2}\.\d{2}\.\d{4}-\d{2}:\d{2}$'
+# result = re.search(regex, data)
+# if result != None:
+#     print('Дата подходит')
+# else:
+#     print('Непрвильно')
+
+
+
+# regex = r'^(\w{4}: ).*'
+# time = 'INFO: Hello'
+# str2 = ''
+
+# res = re.sub(regex, r'\1SYSTEM', time)
+# print(res)
+
+
+
+pwd = sys.argv[1]
+
+regex_len = r'.{12,}'
+regex_special = r'[!@#$%^&*()_+=-?:;№"~`]+'
+regex_num = r'[\d]+'
+regex_up = r'[A-Z]+'
+regex_low = r'[a-z]+'
+
+res_low = True if re.search(regex_low, pwd) != None else False
+res_up = True if re.search(regex_up, pwd) != None else False
+res_special = True if re.search(regex_special, pwd) != None else False
+res_len = True if re.search(regex_len, pwd) != None else False
+res_num = True if re.search(regex_num, pwd) != None else False
+
+
+print(f'''Результат проверки пароля:
+Наличие нижнего регистра: {res_low}
+Наличие верхнего регистра: {res_up}
+Наличие специального символа: {res_special}
+Наличие цифры: {res_num}
+12 символов или длиннее: {res_len}
+''')
+
