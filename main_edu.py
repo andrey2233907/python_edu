@@ -1,5 +1,5 @@
 # PANDAS
-import pandas as pd
+# import pandas as pd
 
 # seri = pd.Series(['Дерево', 'Металл', 'Камень'], index=['Антон', 'Олег', 'Петр'])
 # # print(seri)
@@ -18,7 +18,7 @@ import pandas as pd
 # print(df.describe())
 
 
-df = pd.read_csv('data.csv').fillna('Underfined')
+# df = pd.read_csv('data.csv').fillna('Underfined')
 # high = df[df['severity'] == 'high']
 # critical = df[df['severity'] == 'critical']
 # medium = df[df['severity'] == 'medium']
@@ -36,7 +36,7 @@ df = pd.read_csv('data.csv').fillna('Underfined')
 
 
 
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 # df = pd.read_csv('data.csv')
 # df.plot()
 
@@ -167,26 +167,53 @@ import re
 
 
 
-pwd = sys.argv[1]
+# pwd = sys.argv[1]
 
-regex_len = r'.{12,}'
-regex_special = r'[!@#$%^&*()_+=-?:;№"~`]+'
-regex_num = r'[\d]+'
-regex_up = r'[A-Z]+'
-regex_low = r'[a-z]+'
+# regex_len = r'.{12,}'
+# regex_special = r'[!@#$%^&*()_+=-?:;№"~`]+'
+# regex_num = r'[\d]+'
+# regex_up = r'[A-Z]+'
+# regex_low = r'[a-z]+'
 
-res_low = True if re.search(regex_low, pwd) != None else False
-res_up = True if re.search(regex_up, pwd) != None else False
-res_special = True if re.search(regex_special, pwd) != None else False
-res_len = True if re.search(regex_len, pwd) != None else False
-res_num = True if re.search(regex_num, pwd) != None else False
+# res_low = True if re.search(regex_low, pwd) != None else False
+# res_up = True if re.search(regex_up, pwd) != None else False
+# res_special = True if re.search(regex_special, pwd) != None else False
+# res_len = True if re.search(regex_len, pwd) != None else False
+# res_num = True if re.search(regex_num, pwd) != None else False
 
 
-print(f'''Результат проверки пароля:
-Наличие нижнего регистра: {res_low}
-Наличие верхнего регистра: {res_up}
-Наличие специального символа: {res_special}
-Наличие цифры: {res_num}
-12 символов или длиннее: {res_len}
-''')
+# print(f'''Результат проверки пароля:
+# Наличие нижнего регистра: {res_low}
+# Наличие верхнего регистра: {res_up}
+# Наличие специального символа: {res_special}
+# Наличие цифры: {res_num}
+# 12 символов или длиннее: {res_len}
+# ''')
+
+
+
+
+# HTTP SERVER
+
+import http.server
+
+class MyHandler(http.server.BaseHTTPRequestHandler):
+    # def do_GET(self):
+
+    #     self.send_response(200)
+    #     self.send_header('Content-Type', 'text/plain; charset=utf-8')
+    #     self.end_headers()
+    #     self.wfile.write('hELLO'.encode())
+    def do_GET(self):
+        self.send_header()
+
+
+try:
+    with http.server.HTTPServer(('0.0.0.0', 6767), MyHandler) as server:
+        print('Hosting')
+        server.serve_forever()
+except KeyboardInterrupt:
+    exit()
+
+
 
