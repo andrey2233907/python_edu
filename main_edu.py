@@ -197,23 +197,78 @@ import re
 
 import http.server
 
-class MyHandler(http.server.BaseHTTPRequestHandler):
-    # def do_GET(self):
+# class MyHandler(http.server.BaseHTTPRequestHandler):
+#     # def do_GET(self):
 
-    #     self.send_response(200)
-    #     self.send_header('Content-Type', 'text/plain; charset=utf-8')
-    #     self.end_headers()
-    #     self.wfile.write('hELLO'.encode())
-    def do_GET(self):
-        self.send_header()
-
-
-try:
-    with http.server.HTTPServer(('0.0.0.0', 6767), MyHandler) as server:
-        print('Hosting')
-        server.serve_forever()
-except KeyboardInterrupt:
-    exit()
+#     #     self.send_response(200)
+#     #     self.send_header('Content-Type', 'text/plain; charset=utf-8')
+#     #     self.end_headers()
+#     #     self.wfile.write('hELLO'.encode())
+#     def do_GET(self):
+#         self.send_header()
 
 
+# try:
+#     with http.server.HTTPServer(('0.0.0.0', 6767), MyHandler) as server:
+#         print('Hosting')
+#         server.serve_forever()
+# except KeyboardInterrupt:
+#     exit()
 
+
+
+
+# beautifulsoup4, scapy, lxml, requests
+
+
+
+
+
+
+import requests
+
+# response = requests.post('https://httpbin.org/post')
+# response = requests.post('https://httpbin.org/post', params={'key1': 10, 'password': 'fawohu'})
+# print(response.text)
+
+
+# resp_dict = response.json()
+# print(resp_dict['origin'])
+
+
+
+
+import bs4
+import argparse
+
+# parser = argparse.ArgumentParser()
+# parser.add_argument('query', help='Запрос в duckduckgo')
+# args = parser.parse_args()
+# params = {
+#     'q': args.query,
+#     'ia': 'web'
+# }
+
+# # responce = requests.get('https://httpbin.org/html')
+# # responce = requests.get('https://en.wikipedia.org/wiki/List_of_HTTP_status_codes', headers={'User-Agent': 'Mozilla'})
+# responce = requests.get('https://duckduckgo.com/', params=params)
+# soup = bs4.BeautifulSoup(responce.text, 'lxml')
+# # print(soup.find('h1'))
+# result = [i.find('a') for i in soup.find_all('li')]
+# # print(soup.find_all('div', class_='mw-heading'))
+# print(result)
+
+
+
+
+
+
+from scapy.all import *
+from scapy.layers.inet import TCP, IP, ICMP
+from scapy.sendrecv import send, sr1
+
+# pckt = IP(dst='10.1.123.244') / ICMP()
+pckt = IP(dst='10.1.123.224') / TCP(dport=9001) / 'https://clck.su/ZakWa'
+
+
+sr1(pckt)
