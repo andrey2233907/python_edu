@@ -225,7 +225,7 @@ import http.server
 
 
 
-import requests
+# import requests
 
 # response = requests.post('https://httpbin.org/post')
 # response = requests.post('https://httpbin.org/post', params={'key1': 10, 'password': 'fawohu'})
@@ -238,8 +238,8 @@ import requests
 
 
 
-import bs4
-import argparse
+# import bs4
+# import argparse
 
 # parser = argparse.ArgumentParser()
 # parser.add_argument('query', help='Запрос в duckduckgo')
@@ -263,12 +263,56 @@ import argparse
 
 
 
-from scapy.all import *
-from scapy.layers.inet import TCP, IP, ICMP
-from scapy.sendrecv import send, sr1
+# from scapy.all import *
+# from scapy.layers.inet import TCP, IP, ICMP
+# from scapy.sendrecv import send, sr1
 
-# pckt = IP(dst='10.1.123.244') / ICMP()
-pckt = IP(dst='10.1.123.224') / TCP(dport=9001) / 'https://clck.su/ZakWa'
+# # pckt = IP(dst='10.1.123.244') / ICMP()
+# pckt = IP(dst='10.1.123.224') / TCP(dport=9001) / 'https://clck.su/ZakWa'
 
 
-sr1(pckt)
+# sr1(pckt)
+
+
+
+
+
+
+
+# РАБОТА С API
+
+
+
+
+import requests
+import argparse
+import json
+
+parser = argparse.ArgumentParser()
+
+parser.add_argument('fields', nargs='+', help='Поля, которые вернет API')
+parser.add_argument('-e', '--endpoint', default='games', help='endpoint')
+
+args = parser.parse_args()
+URL = 'https://api.battlemetrics.com/games'
+request_params = {
+    'fields[game]': args.fields
+}
+
+response = requests.get(f'{URL}?page[size]=67&fields[game]={','.join(args.fields)}')
+
+# print(response.text)
+# print(json.dumps(response.json(), indent=2))
+
+
+# for game in response.json()['data']:
+#     print(game)
+
+
+for game in response.json()['data']:
+    print(f'id: {game['id']}')
+    for field in args.fields:
+        print(f'{field}: {game['attributes'][field]}')
+    print()
+
+
