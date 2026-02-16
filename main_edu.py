@@ -288,18 +288,18 @@ import requests
 import argparse
 import json
 
-parser = argparse.ArgumentParser()
+# parser = argparse.ArgumentParser()
 
-parser.add_argument('fields', nargs='+', help='Поля, которые вернет API')
-parser.add_argument('-e', '--endpoint', default='games', help='endpoint')
+# parser.add_argument('fields', nargs='+', help='Поля, которые вернет API')
+# parser.add_argument('-e', '--endpoint', default='games', help='endpoint')
 
-args = parser.parse_args()
-URL = 'https://api.battlemetrics.com/games'
-request_params = {
-    'fields[game]': args.fields
-}
+# args = parser.parse_args()
+# URL = 'https://api.battlemetrics.com/games'
+# request_params = {
+#     'fields[game]': args.fields
+# }
 
-response = requests.get(f'{URL}?page[size]=67&fields[game]={','.join(args.fields)}')
+# response = requests.get(f'{URL}?page[size]=67&fields[game]={','.join(args.fields)}')
 
 # print(response.text)
 # print(json.dumps(response.json(), indent=2))
@@ -309,10 +309,59 @@ response = requests.get(f'{URL}?page[size]=67&fields[game]={','.join(args.fields
 #     print(game)
 
 
-for game in response.json()['data']:
-    print(f'id: {game['id']}')
-    for field in args.fields:
-        print(f'{field}: {game['attributes'][field]}')
-    print()
+# for game in response.json()['data']:
+#     print(f'id: {game['id']}')
+#     for field in args.fields:
+#         print(f'{field}: {game['attributes'][field]}')
+#     print()
+
+
+
+
+
+
+# SQL
+
+
+
+
+
+
+import argparse
+parser = argparse.ArgumentParser()
+import hashlib
+parser.add_argument('-u', required=False, help='Username')
+parser.add_argument('-p', required=False, help='password')
+args = parser.parse_args()
+import sqlite3
+
+conn = sqlite3.connect('database.db')
+cursor = conn.cursor()
+
+cursor.execute('''
+create table if not exists Users(
+    id integer  primary key autoincrement,
+    username varchar(30),
+    password varchar(64)
+);
+''')
+
+
+if args.u != None and args.p != None:
+    pwdhash = hashlib.md5(args.p.encode()).hexdigest()
+    query = '''
+        insert into Users(username, password)
+        values (?, ?);
+    '''
+    cursor.execute(query, (args.u, pwdhash))
+
+cursor.execute('''
+select * from Users;
+''')
+result = cursor.fetchall()
+
+print(result)
+conn.commit()
+
 
 
