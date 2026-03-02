@@ -327,41 +327,135 @@ import json
 
 
 
-import argparse
-parser = argparse.ArgumentParser()
+# import argparse
+# parser = argparse.ArgumentParser()
+# import hashlib
+# parser.add_argument('-u', required=False, help='Username')
+# parser.add_argument('-p', required=False, help='password')
+# args = parser.parse_args()
+# import sqlite3
+
+# conn = sqlite3.connect('database.db')
+# cursor = conn.cursor()
+
+# cursor.execute('''
+# create table if not exists Users(
+#     id integer  primary key autoincrement,
+#     username varchar(30),
+#     password varchar(64)
+# );
+# ''')
+
+
+# if args.u != None and args.p != None:
+#     pwdhash = hashlib.md5(args.p.encode()).hexdigest()
+#     query = '''
+#         insert into Users(username, password)
+#         values (?, ?);
+#     '''
+#     cursor.execute(query, (args.u, pwdhash))
+
+# cursor.execute('''
+# select * from Users;
+# ''')
+# result = cursor.fetchall()
+
+# print(result)
+# conn.commit()
+
+
+
+
+# BASE64, XOR
+
+
+
+
 import hashlib
-parser.add_argument('-u', required=False, help='Username')
-parser.add_argument('-p', required=False, help='password')
+import argparse
+import base64
+
+parser = argparse.ArgumentParser()
+parser.add_argument('mode', help='Режимы работы программы (hash, base64, xor)')
+parser.add_argument('path', help='путь к файлу')
+parser.add_argument('-a', '--algorithm', help='Алгоритм хэширования (md5, sha256, sha512), по умолчанию - md5', default='md5')
+parser.add_argument('-o', '--output-file', help='Путь к файлу для вывода', required=False)
+parser.add_argument('-d', '--decode', action='store_true', help='Режим декодирования base64: True/False, по умолчанию - False')
+parser.add_argument('-k', '--key', help='Ключ для раюоты с xor', required=False)
 args = parser.parse_args()
-import sqlite3
-
-conn = sqlite3.connect('database.db')
-cursor = conn.cursor()
-
-cursor.execute('''
-create table if not exists Users(
-    id integer  primary key autoincrement,
-    username varchar(30),
-    password varchar(64)
-);
-''')
 
 
-if args.u != None and args.p != None:
-    pwdhash = hashlib.md5(args.p.encode()).hexdigest()
-    query = '''
-        insert into Users(username, password)
-        values (?, ?);
-    '''
-    cursor.execute(query, (args.u, pwdhash))
 
-cursor.execute('''
-select * from Users;
-''')
-result = cursor.fetchall()
 
-print(result)
-conn.commit()
+def hashfile(file_contents: str, algorithm: str) -> str:
+    encoded_file_contents = file_contents.encode()
+    hashed_file_contents = None
+    match algorithm:
+        case 'md5':
+            hashed_file_contents = hashlib.md5(encoded_file_contents).hexdigest()
+        case 'sha256':
+            hashed_file_contents = hashlib.sha256(encoded_file_contents).hexdigest()
+        case 'sha512':
+            hashed_file_contents = hashlib.sha512(encoded_file_contents).hexdigest()
+        case _:
+            print('Возможные виды хэширования: md5, sha256, sha512') 
+    return hashed_file_contents
+
+
+
+
+def base64_file(file_contents: str, decode: bool):
+    encoded_file_contents = file_contents.encode()
+    if decode:
+        result = base64.b64decode(encoded_file_contents)
+    else:
+        resilt = base64.b64encode(encoded_file_contents)
+    return resilt.decode()
+
+
+
+def xor(file_contents: str, key: str) -> str:
+    if key == None:
+        print('Для работы с xor нужно указать ключ по флагу -k')
+    result = ''
+    for i in range(len(file_contents)):
+        utf_file_char = ord(file_contents[i])
+        utf_key_char = ord(key[i % len(key)])
+        char_result = utf_file_char ^ utf_key_char
+        result += chr(char_result)
+    return result
+
+
+def print_or_write(result: str, output_file: str | None):
+    if output_file == None:
+        print(result)
+    else:
+        with open(output_file, 'w') as file:
+            file.write(result)
+
+
+
+def main():
+    with open(args.path) as file:
+        file_contents = file.read()
+        result = None
+        match args.mode:
+            case 'hash':
+                result = hashfile(file_contents, args.algorithm)
+            case 'base64':
+                result = base64_file(file_contents, args.decode)
+            case 'xor':
+                result = xor(file_contents, args.key) 
+            case _:
+                print("Возможные режимы работы программы: hash, base64, xor")
+                exit()
+        print_or_write(result, args.output_file)
+
+if __name__ == '__main__':
+    main()
+
+
+
 
 
 
