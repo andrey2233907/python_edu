@@ -284,9 +284,9 @@ import http.server
 
 
 
-import requests
-import argparse
-import json
+# import requests
+# import argparse
+# import json
 
 # parser = argparse.ArgumentParser()
 
@@ -371,88 +371,142 @@ import json
 
 
 
-import hashlib
-import argparse
-import base64
+# import hashlib
+# import argparse
+# import base64
 
-parser = argparse.ArgumentParser()
-parser.add_argument('mode', help='Режимы работы программы (hash, base64, xor)')
-parser.add_argument('path', help='путь к файлу')
-parser.add_argument('-a', '--algorithm', help='Алгоритм хэширования (md5, sha256, sha512), по умолчанию - md5', default='md5')
-parser.add_argument('-o', '--output-file', help='Путь к файлу для вывода', required=False)
-parser.add_argument('-d', '--decode', action='store_true', help='Режим декодирования base64: True/False, по умолчанию - False')
-parser.add_argument('-k', '--key', help='Ключ для раюоты с xor', required=False)
-args = parser.parse_args()
-
-
-
-
-def hashfile(file_contents: str, algorithm: str) -> str:
-    encoded_file_contents = file_contents.encode()
-    hashed_file_contents = None
-    match algorithm:
-        case 'md5':
-            hashed_file_contents = hashlib.md5(encoded_file_contents).hexdigest()
-        case 'sha256':
-            hashed_file_contents = hashlib.sha256(encoded_file_contents).hexdigest()
-        case 'sha512':
-            hashed_file_contents = hashlib.sha512(encoded_file_contents).hexdigest()
-        case _:
-            print('Возможные виды хэширования: md5, sha256, sha512') 
-    return hashed_file_contents
+# parser = argparse.ArgumentParser()
+# parser.add_argument('mode', help='Режимы работы программы (hash, base64, xor)')
+# parser.add_argument('path', help='путь к файлу')
+# parser.add_argument('-a', '--algorithm', help='Алгоритм хэширования (md5, sha256, sha512), по умолчанию - md5', default='md5')
+# parser.add_argument('-o', '--output-file', help='Путь к файлу для вывода', required=False)
+# parser.add_argument('-d', '--decode', action='store_true', help='Режим декодирования base64: True/False, по умолчанию - False')
+# parser.add_argument('-k', '--key', help='Ключ для раюоты с xor', required=False)
+# args = parser.parse_args()
 
 
 
 
-def base64_file(file_contents: str, decode: bool):
-    encoded_file_contents = file_contents.encode()
-    if decode:
-        result = base64.b64decode(encoded_file_contents)
-    else:
-        resilt = base64.b64encode(encoded_file_contents)
-    return resilt.decode()
+# def hashfile(file_contents: str, algorithm: str) -> str:
+#     encoded_file_contents = file_contents.encode()
+#     hashed_file_contents = None
+#     match algorithm:
+#         case 'md5':
+#             hashed_file_contents = hashlib.md5(encoded_file_contents).hexdigest()
+#         case 'sha256':
+#             hashed_file_contents = hashlib.sha256(encoded_file_contents).hexdigest()
+#         case 'sha512':
+#             hashed_file_contents = hashlib.sha512(encoded_file_contents).hexdigest()
+#         case _:
+#             print('Возможные виды хэширования: md5, sha256, sha512') 
+#     return hashed_file_contents
 
 
 
-def xor(file_contents: str, key: str) -> str:
-    if key == None:
-        print('Для работы с xor нужно указать ключ по флагу -k')
-    result = ''
-    for i in range(len(file_contents)):
-        utf_file_char = ord(file_contents[i])
-        utf_key_char = ord(key[i % len(key)])
-        char_result = utf_file_char ^ utf_key_char
-        result += chr(char_result)
-    return result
 
-
-def print_or_write(result: str, output_file: str | None):
-    if output_file == None:
-        print(result)
-    else:
-        with open(output_file, 'w') as file:
-            file.write(result)
+# def base64_file(file_contents: str, decode: bool):
+#     encoded_file_contents = file_contents.encode()
+#     if decode:
+#         result = base64.b64decode(encoded_file_contents)
+#     else:
+#         resilt = base64.b64encode(encoded_file_contents)
+#     return resilt.decode()
 
 
 
-def main():
-    with open(args.path) as file:
-        file_contents = file.read()
-        result = None
-        match args.mode:
-            case 'hash':
-                result = hashfile(file_contents, args.algorithm)
-            case 'base64':
-                result = base64_file(file_contents, args.decode)
-            case 'xor':
-                result = xor(file_contents, args.key) 
-            case _:
-                print("Возможные режимы работы программы: hash, base64, xor")
-                exit()
-        print_or_write(result, args.output_file)
+# def xor(file_contents: str, key: str) -> str:
+#     if key == None:
+#         print('Для работы с xor нужно указать ключ по флагу -k')
+#     result = ''
+#     for i in range(len(file_contents)):
+#         utf_file_char = ord(file_contents[i])
+#         utf_key_char = ord(key[i % len(key)])
+#         char_result = utf_file_char ^ utf_key_char
+#         result += chr(char_result)
+#     return result
 
-if __name__ == '__main__':
-    main()
+
+# def print_or_write(result: str, output_file: str | None):
+#     if output_file == None:
+#         print(result)
+#     else:
+#         with open(output_file, 'w') as file:
+#             file.write(result)
+
+
+
+# def main():
+#     with open(args.path) as file:
+#         file_contents = file.read()
+#         result = None
+#         match args.mode:
+#             case 'hash':
+#                 result = hashfile(file_contents, args.algorithm)
+#             case 'base64':
+#                 result = base64_file(file_contents, args.decode)
+#             case 'xor':
+#                 result = xor(file_contents, args.key) 
+#             case _:
+#                 print("Возможные режимы работы программы: hash, base64, xor")
+#                 exit()
+#         print_or_write(result, args.output_file)
+
+# if __name__ == '__main__':
+#     main()
+
+
+
+
+#АНАЛИЗ ЛОГОВ (не готово чутчут)
+
+
+
+
+
+import re
+def stat(regex, file):
+    stat = {}
+    for line in file:
+        regex_result = re.findall(regex, line)
+        if len(regex_result) == 0:
+            continue
+        if regex_result[0] in stat:
+            stat[regex_result[0]] += 1
+        else:
+            stat[regex_result[0]] = 1
+    file.seek(0)
+    return stat
+
+def anonmalies(stat):
+    avg = sum(stat.values()) / len(stat)
+    for item in stat.items():
+        if item[1] > avg * 1.5 or item[1] < avg * 0.33:
+            print(f'Anomaly in {item[0]}: {item[1]}')
+
+
+def get_errors(file, statuscode):
+    regex = r'^(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}).+(\d\d\d)$'
+    stats = {}
+    for line in file:
+        regex_res = re.findall(regex, line)
+        if len(regex_res) < 2:
+            continue
+        if regex_res[1] != statuscode:
+            continue
+        if regex_res[0] in stat:
+            stat[regex_res[0]] += 1
+        else:
+            stat[regex_res[0]] == 1
+    return stats
+
+
+
+with open('access.log', 'r') as file:
+    hours_counter = stat(r'\d\d\d\d:(\d\d):\d\d:\d\d', file)
+    ip_counter = stat(r'(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})', file)
+    anonmalies(hours_counter)
+    anonmalies(ip_counter)
+    get_errors(file, 404)
 
 
 
