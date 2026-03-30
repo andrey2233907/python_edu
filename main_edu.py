@@ -463,53 +463,87 @@ import http.server
 
 
 
-import re
-def stat(regex, file):
-    stat = {}
-    for line in file:
-        regex_result = re.findall(regex, line)
-        if len(regex_result) == 0:
-            continue
-        if regex_result[0] in stat:
-            stat[regex_result[0]] += 1
-        else:
-            stat[regex_result[0]] = 1
-    file.seek(0)
-    return stat
+# import re
+# def stat(regex, file):
+#     stat = {}
+#     for line in file:
+#         regex_result = re.findall(regex, line)
+#         if len(regex_result) == 0:
+#             continue
+#         if regex_result[0] in stat:
+#             stat[regex_result[0]] += 1
+#         else:
+#             stat[regex_result[0]] = 1
+#     file.seek(0)
+#     return stat
 
-def anonmalies(stat):
-    avg = sum(stat.values()) / len(stat)
-    for item in stat.items():
-        if item[1] > avg * 1.5 or item[1] < avg * 0.33:
-            print(f'Anomaly in {item[0]}: {item[1]}')
-
-
-def get_errors(file, statuscode):
-    regex = r'^(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}).+(\d\d\d)$'
-    stats = {}
-    for line in file:
-        regex_res = re.findall(regex, line)
-        if len(regex_res) < 2:
-            continue
-        if regex_res[1] != statuscode:
-            continue
-        if regex_res[0] in stat:
-            stat[regex_res[0]] += 1
-        else:
-            stat[regex_res[0]] == 1
-    return stats
+# def anonmalies(stat):
+#     avg = sum(stat.values()) / len(stat)
+#     for item in stat.items():
+#         if item[1] > avg * 1.5 or item[1] < avg * 0.33:
+#             print(f'Anomaly in {item[0]}: {item[1]}')
 
 
+# def get_errors(file, statuscode):
+#     regex = r'^(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}).+(\d\d\d)$'
+#     stats = {}
+#     for line in file:
+#         regex_res = re.findall(regex, line)
+#         if len(regex_res) < 2:
+#             continue
+#         if regex_res[1] != statuscode:
+#             continue
+#         if regex_res[0] in stat:
+#             stat[regex_res[0]] += 1
+#         else:
+#             stat[regex_res[0]] == 1
+#     return stats
 
-with open('access.log', 'r') as file:
-    hours_counter = stat(r'\d\d\d\d:(\d\d):\d\d:\d\d', file)
-    ip_counter = stat(r'(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})', file)
-    anonmalies(hours_counter)
-    anonmalies(ip_counter)
-    get_errors(file, 404)
 
 
+# with open('access.log', 'r') as file:
+#     hours_counter = stat(r'\d\d\d\d:(\d\d):\d\d:\d\d', file)
+#     ip_counter = stat(r'(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})', file)
+#     anonmalies(hours_counter)
+#     anonmalies(ip_counter)
+#     get_errors(file, 404)
 
 
 
 
+
+# VIRUS TOTAL API
+
+
+
+
+import json
+import requests
+from sys import argv
+import base64
+
+def get_scanners_by_result_type(scanners: dict, category: str) -> str:
+    result = ''
+    for item in scanners.items():
+        if item[1]['category'] == category:
+            result += f'{item[0]}, '
+    return result
+
+
+
+url_to_scan = argv[1]
+
+b64_url = base64.urlsafe_b64encode(url_to_scan.encode()).decode().replace('=', '')
+
+url = f'https://www.virustotal.com/api/v3/urls/{b64_url}'
+headers = {'x-apikey': '7108cfaecffdd723e62c86b03179887e482f75ade06478a3b0c62b01c37880e1', 'accept': 'application/json'}
+
+report = requests.get(url, headers=headers).json()
+scanners = report['data']['attributes']['last_analysis_results']
+
+print('statistics:')
+print(f'malicious: {report['data']['attributes']['last_analysis_stats']['malicious']}; {get_scanners_by_result_type(scanners, 'malicious')}')
+print(f'suspicious: {report['data']['attributes']['last_analysis_stats']['suspicious']}; {get_scanners_by_result_type(scanners, 'suspicious')}')
+print(f'undetected: {report['data']['attributes']['last_analysis_stats']['undetected']}; {get_scanners_by_result_type(scanners, 'undetected')}')
+print(f'harmless: {report['data']['attributes']['last_analysis_stats']['harmless']}; {get_scanners_by_result_type(scanners, 'harmless')}')
+print(f'timeout: {report['data']['attributes']['last_analysis_stats']['timeout']}; {get_scanners_by_result_type(scanners, 'timeout')}')
